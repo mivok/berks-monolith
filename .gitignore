@@ -1,0 +1,12 @@
+# Bundler stuff
+Gemfile.lock
+.bundle
+vendor/
+tmp
+*.gem
+
+
+# In case these are used for testing
+Berksfile
+Berksfile.lock
+cookbooks/
