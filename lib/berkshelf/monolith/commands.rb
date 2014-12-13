@@ -1,6 +1,10 @@
+require 'thor'
+
 module Berkshelf
   module Monolith
     class Command < Thor
+      namespace ''
+
       desc 'install [PATH]', 'Clone all cookbooks into the cookbooks directory'
       def install(path = File.join(Dir.pwd, "cookbooks"))
         berksfile = Berkshelf::Berksfile.from_options(options)
@@ -32,10 +36,5 @@ module Berkshelf
         end
       end
     end
-  end
-
-  class Cli < Thor
-    desc 'monolith SUBCOMMAND', 'Help berkshelf run as a monolithic repository'
-    subcommand 'monolith', Berkshelf::Monolith::Command
   end
 end

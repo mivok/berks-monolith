@@ -2,7 +2,20 @@
 # This is a horrible hack right now until I can work out how to load
 # extensions for additional commands into berks.
 $:.push File.expand_path('../../lib', __FILE__)
-require 'berkshelf/cli'
 require 'berkshelf/monolith'
 
-Berkshelf::Cli::Runner.new(ARGV.dup).execute!
+if File.basename($0) == 'berks'
+  # We're called as berks - act as berkshelf with added monolith subcommand
+  require 'berkshelf/cli'
+
+  module Berkshelf
+    class Cli < Thor
+      desc 'monolith SUBCOMMAND', 'Clone all repos from a berksfile'
+      subcommand 'monolith', Berkshelf::Monolith::Command
+    end
+  end
+  Berkshelf::Cli::Runner.new(ARGV.dup).execute!
+else
+  # Otherwise, act as a standalone command
+  Berkshelf::Monolith::Command.start
+end
