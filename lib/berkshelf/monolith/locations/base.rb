@@ -11,8 +11,7 @@ module Berkshelf
       # development (e.g. a git checkout with all git metadata, no compiled
       # artefacts).
       def install(destination)
-        raise AbstractFunction,
-          "#install must be implemented on #{self.class.name}!"
+        nil
       end
     end
   end

@@ -1,4 +1,5 @@
 require 'thor'
+require 'berkshelf'
 
 module Berkshelf
   module Monolith
@@ -7,7 +8,8 @@ module Berkshelf
 
       desc 'install [PATH]', 'Clone all cookbooks into the cookbooks directory'
       def install(path = File.join(Dir.pwd, "cookbooks"))
-        berksfile = Berkshelf::Berksfile.from_options(options)
+        berksfile = Berkshelf::Berksfile.from_options(options.dup)
+
         cached_cookbooks = berksfile.install
         #require 'pry'; binding.pry
         return nil if cached_cookbooks.empty?
