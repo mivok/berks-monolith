@@ -1,5 +1,5 @@
 require 'thor'
-require 'berkshelf'
+require 'berkshelf/monolith/berksfile'
 
 module Berkshelf
   module Monolith
@@ -8,33 +8,33 @@ module Berkshelf
 
       desc 'install [PATH]', 'Clone all cookbooks into the cookbooks directory'
       def install(path = File.join(Dir.pwd, "cookbooks"))
-        berksfile = Berkshelf::Berksfile.from_options(options.dup)
-
-        cached_cookbooks = berksfile.install
-        #require 'pry'; binding.pry
-        return nil if cached_cookbooks.empty?
-        cached_cookbooks.each do |cookbook|
+        berksfile = Berkshelf::Monolith::Berksfile.new(options.dup)
+        berksfile.cookbooks(path) do |cookbook, dep, destination|
           # TODO - make a monolith formatter
           Berkshelf.formatter.vendor(cookbook, path)
-          destination = File.join(path, cookbook.cookbook_name)
-          dep = berksfile.get_dependency(cookbook.cookbook_name)
-          if dep and dep.location
-            # Look for Berkshelf::Monolith::FooLocation for the location
-            # object and use it for installation if needed.
-            klass = dep.location.class.name.split('::')[-1]
-            Berkshelf.log.debug("Location class name: #{klass}")
-            if Berkshelf::Monolith.const_defined?(klass)
-              Berkshelf.log.debug("Found monolith class for #{klass}")
-              obj = Berkshelf::Monolith.const_get(klass).new(dep.location)
-              obj.install(destination)
-            end
-            next
+          obj = berksfile.monolith_obj(dep)
+          if obj
+            obj.install(destination)
+          else
+            # We don't have a custom method for installing this type of
+            # cookbook, so fall back to copying it from the cached location.
+            Berkshelf.log.debug('Falling back to FileSyncer')
+            FileSyncer.sync(cookbook.path, destination)
           end
-          # We don't have a custom method for installing this type of
-          # cookbook, so fall back to copying it from the cached location.
-          Berkshelf.log.debug(
-            "No monolith class for #{klass}, falling back to FileSyncer")
-          FileSyncer.sync(cookbook.path, destination)
+        end
+      end
+
+      desc 'update [PATH]', 'Update all cloned cookbooks'
+      def update(path = File.join(Dir.pwd, "cookbooks"))
+        berksfile = Berkshelf::Monolith::Berksfile.new(options.dup)
+        berksfile.cookbooks(path) do |cookbook, dep, destination|
+          obj = berksfile.monolith_obj(dep)
+          if obj
+            Berkshelf.formatter.msg("Updating #{cookbook}")
+            obj.update(destination)
+          else
+            Berkshelf.log.debug("Skipping #{cookbook}")
+          end
         end
       end
     end

@@ -20,6 +20,12 @@ module Berkshelf
         #git %|reset --hard #{@revision}|
       end
 
+      def update(destination)
+        Dir.chdir(destination) do
+          git %|pull|
+        end
+      end
+
       private
 
       # Taken from Berkshelf::GitLocation

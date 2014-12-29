@@ -28,6 +28,17 @@ module Monolith
       repo_path
     end
 
+    def make_change_git(name)
+      repo_path = tmp_path.join("git", name)
+      Dir.chdir(repo_path) do
+        File.open('test.txt', 'w') do |f|
+          f.puts 'Testing'
+        end
+        %x|git add test.txt|
+        %x|git commit --author "Me <me@example.com>" -m "Update"|
+      end
+    end
+
     def make_berksfile(types)
       File.open(tmp_path.join('Berksfile'), 'w') do |berksfile|
         berksfile.puts "source 'https://supermarket.chef.io/'"
