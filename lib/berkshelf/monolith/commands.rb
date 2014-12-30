@@ -37,6 +37,19 @@ module Berkshelf
           end
         end
       end
+
+      desc 'clean [PATH]', 'Delete all cloned cookbooks'
+      def clean(path = File.join(Dir.pwd, "cookbooks"))
+        berksfile = Berkshelf::Monolith::Berksfile.new(options.dup)
+        berksfile.cookbooks(path) do |cookbook, dep, destination|
+          obj = berksfile.monolith_obj(dep)
+          if obj
+            obj.clean(destination)
+          else
+            Berkshelf.log.debug("Skipping #{cookbook}")
+          end
+        end
+      end
     end
   end
 end

@@ -13,6 +13,24 @@ module Berkshelf
       def install(destination)
         nil
       end
+
+      # Update the cookbook in the development environment to the latest
+      # version. E.g. if git is used, run git pull.
+      def update(destination)
+        nil
+      end
+
+      # Remove a previously installed cookbook. If a cookbook was never
+      # installed in the first place (either because install wasn't run, or
+      # because of the location type), then this should do nothing.
+      def clean(destination)
+        if File.exist?(destination)
+          Berkshelf.formatter.msg("Deleting #{destination}")
+          FileUtils.rm_rf(destination)
+        else
+          Berkshelf.formatter.msg("Cookbook is not cloned to #{destination}. Skipping.")
+        end
+      end
     end
   end
 end
