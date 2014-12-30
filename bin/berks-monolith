@@ -3,4 +3,4 @@
 # extensions for additional commands into berks.
 $:.push File.expand_path('../../lib', __FILE__)
 require 'berkshelf/monolith'
-Berkshelf::Monolith::Command.start
+Monolith::Command.start

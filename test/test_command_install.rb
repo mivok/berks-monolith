@@ -6,7 +6,7 @@ require_relative 'helpers'
 require 'celluloid/test'
 Celluloid.init
 
-require 'berkshelf/monolith'
+require 'monolith'
 
 class TestCommandInstall < MiniTest::Test
   include Monolith::TestHelpers
@@ -18,7 +18,7 @@ class TestCommandInstall < MiniTest::Test
   def test_install_command
     make_berksfile([:git]) do
       Berkshelf.set_format('null') # Don't print output
-      Berkshelf::Monolith::Command.start(['install'])
+      Monolith::Command.start(['install'])
       assert File.exist?("cookbooks/test_git")
       assert File.exist?("cookbooks/test_git/.git")
     end

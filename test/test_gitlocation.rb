@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'fileutils'
 
 require 'berkshelf'
-require 'berkshelf/monolith/locations/git'
+require 'monolith/locations/git'
 
 class TestGitLocation < MiniTest::Test
 
@@ -29,7 +29,7 @@ class TestGitLocation < MiniTest::Test
 
   def test_install
     # Actually do the install
-    location = Berkshelf::Monolith::GitLocation.new(nil)
+    location = Monolith::GitLocation.new(nil)
     location.stub(:cache_path, @mock_cache) do
       location.install(@mock_destination)
     end
