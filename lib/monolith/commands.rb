@@ -1,25 +1,31 @@
 require 'thor'
 require 'monolith/berksfile'
+require 'monolith/formatter'
 
 module Monolith
   class Command < Thor
     namespace ''
 
+    class_option :quiet,
+      :type => :boolean,
+      :desc => "Don't print out any informational messages",
+      :aliases => '-q',
+      :default => false
+
+
+    def initialize(*args)
+      super(*args)
+
+      if @options[:quiet]
+        Monolith.formatter.quiet = true
+      end
+    end
+
     desc 'install [PATH]', 'Clone all cookbooks into the cookbooks directory'
     def install(path = File.join(Dir.pwd, "cookbooks"))
       berksfile = Monolith::Berksfile.new(options.dup)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
-        # TODO - make a monolith formatter
-        Berkshelf.formatter.vendor(cookbook, path)
-        obj = berksfile.monolith_obj(dep)
-        if obj
-          obj.install(destination)
-        else
-          # We don't have a custom method for installing this type of
-          # cookbook, so fall back to copying it from the cached location.
-          Berkshelf.log.debug('Falling back to FileSyncer')
-          FileSyncer.sync(cookbook.path, destination)
-        end
+        berksfile.monolith_action(:install, cookbook, dep, destination)
       end
     end
 
@@ -27,13 +33,7 @@ module Monolith
     def update(path = File.join(Dir.pwd, "cookbooks"))
       berksfile = Monolith::Berksfile.new(options.dup)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
-        obj = berksfile.monolith_obj(dep)
-        if obj
-          Berkshelf.formatter.msg("Updating #{cookbook}")
-          obj.update(destination)
-        else
-          Berkshelf.log.debug("Skipping #{cookbook}")
-        end
+        berksfile.monolith_action(:update, cookbook, dep, destination)
       end
     end
 
@@ -41,12 +41,7 @@ module Monolith
     def clean(path = File.join(Dir.pwd, "cookbooks"))
       berksfile = Monolith::Berksfile.new(options.dup)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
-        obj = berksfile.monolith_obj(dep)
-        if obj
-          obj.clean(destination)
-        else
-          Berkshelf.log.debug("Skipping #{cookbook}")
-        end
+        berksfile.monolith_action(:clean, cookbook, dep, destination)
       end
     end
   end

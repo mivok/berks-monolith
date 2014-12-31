@@ -13,6 +13,7 @@ module Monolith
     #
     # Can take a block to do something with each cookbook.
     def cookbooks(path)
+      Berkshelf.ui.mute! if Monolith.formatter.quiet
       cached_cookbooks = @berksfile.install
       if block_given?
         cached_cookbooks.each do |cookbook|
@@ -26,17 +27,22 @@ module Monolith
       cached_cookbooks
     end
 
+    def monolith_action(action, cookbook, dep, destination)
+      obj = monolith_obj(dep)
+      if obj.nil?
+        Monolith.formatter.unsupported_location(cookbook, dep)
+      else
+        Monolith.formatter.send(action, cookbook, destination)
+        obj.send(action, destination)
+      end
+    end
+
     # Feteches the appropriate monolith location object for a given cookbook
     # dependency. I.e. Monolith::FooLocation.
     def monolith_obj(dep)
       klass = dep.location.class.name.split('::')[-1]
-      Berkshelf.log.debug("Location class name: #{klass}")
       if Monolith.const_defined?(klass)
-        Berkshelf.log.debug("Found monolith class for #{klass}")
         Monolith.const_get(klass).new(dep.location)
-      else
-        Berkshelf.log.debug("No monolith class found for #{klass}")
-        nil
       end
     end
   end

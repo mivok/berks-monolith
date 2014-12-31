@@ -24,10 +24,10 @@ module Monolith
     # because of the location type), then this should do nothing.
     def clean(destination)
       if File.exist?(destination)
-        Berkshelf.formatter.msg("Deleting #{destination}")
+        Monolith.formatter.msg("Deleting #{destination}")
         FileUtils.rm_rf(destination)
       else
-        Berkshelf.formatter.msg("Cookbook is not cloned to #{destination}. Skipping.")
+        Monolith.formatter.msg("#{destination} doesn't exist. Skipping.")
       end
     end
   end

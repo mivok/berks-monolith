@@ -17,8 +17,7 @@ class TestCommandInstall < MiniTest::Test
 
   def test_install_command
     make_berksfile([:git]) do
-      Berkshelf.set_format('null') # Don't print output
-      Monolith::Command.start(['install'])
+      Monolith::Command.start(['install', '-q'])
       assert File.exist?("cookbooks/test_git")
       assert File.exist?("cookbooks/test_git/.git")
     end
