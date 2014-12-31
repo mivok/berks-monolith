@@ -32,7 +32,7 @@ module Monolith
           destination = File.join(File.expand_path(path),
                                   cookbook.cookbook_name)
           dep = berksfile.get_dependency(cookbook.cookbook_name)
-          if dep and dep.location
+          if dep
             yield cookbook, dep, destination
           end
         end
@@ -52,11 +52,15 @@ module Monolith
     # Feteches the appropriate monolith location object for a given cookbook
     # dependency. I.e. Monolith::FooLocation.
     def monolith_obj(cookbook, dep, destination)
-      klass = dep.location.class.name.split('::')[-1]
-      Monolith.formatter.debug("Location class for #{cookbook.cookbook_name}" \
-                               " is #{klass}")
-      if Monolith.const_defined?(klass)
-        Monolith.const_get(klass).new(cookbook, dep, destination)
+      if dep.location.nil?
+        Monolith::DefaultLocation.new(cookbook, dep, destination)
+      else
+        klass = dep.location.class.name.split('::')[-1]
+        Monolith.formatter.debug("Location class for " \
+                                 "#{cookbook.cookbook_name} is #{klass}")
+        if Monolith.const_defined?(klass)
+          Monolith.const_get(klass).new(cookbook, dep, destination)
+        end
       end
     end
   end
