@@ -21,6 +21,8 @@ class TestGitLocation < MiniTest::Test
       %x|git init|
       %x|git remote add origin #{@mock_origin}|
     end
+    # Don't print informational messages while testing
+    Monolith.formatter.quiet = true
   end
 
   def teardown
@@ -29,9 +31,14 @@ class TestGitLocation < MiniTest::Test
 
   def test_install
     # Actually do the install
-    location = Monolith::GitLocation.new(nil)
+    @mock_cookbook = Minitest::Mock.new
+    @mock_cookbook.expect :cookbook_name, @test_cookbook
+    @mock_dep = Minitest::Mock.new
+    @mock_dep.expect :location, nil
+    location = Monolith::GitLocation.new(@mock_cookbook, @mock_dep,
+                                         @mock_destination)
     location.stub(:cache_path, @mock_cache) do
-      location.install(@mock_destination)
+      location.install
     end
 
     assert File.directory?(@mock_destination)

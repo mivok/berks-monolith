@@ -23,7 +23,7 @@ class TestCommandInstall < MiniTest::Test
       # Verify the 'before' state
       refute File.exist?("cookbooks/test_git/test.txt")
       # Perform the update
-      Monolith::Command.start(['update'])
+      Monolith::Command.start(['update', '-q'])
       assert File.exist?("cookbooks/test_git")
       assert File.exist?("cookbooks/test_git/.git")
       assert File.exist?("cookbooks/test_git/test.txt")

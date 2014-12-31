@@ -12,18 +12,23 @@ module Monolith
       :aliases => '-q',
       :default => false
 
+    class_option :debug,
+      :type => :boolean,
+      :desc => 'Print additional debug messages',
+      :aliases => '-d',
+      :default => false
 
     def initialize(*args)
       super(*args)
 
-      if @options[:quiet]
-        Monolith.formatter.quiet = true
-      end
+      Monolith.formatter.quiet = @options[:quiet]
+      Monolith.formatter.debug = @options[:debug]
     end
 
     desc 'install [PATH]', 'Clone all cookbooks into the cookbooks directory'
     def install(path = File.join(Dir.pwd, "cookbooks"))
       berksfile = Monolith::Berksfile.new(options.dup)
+      berksfile.install # We need to run berks install first
       berksfile.cookbooks(path) do |cookbook, dep, destination|
         berksfile.monolith_action(:install, cookbook, dep, destination)
       end

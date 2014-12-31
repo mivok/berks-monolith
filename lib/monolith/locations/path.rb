@@ -5,16 +5,19 @@
 # your Berksfile.
 module Monolith
   class PathLocation < BaseLocation
-    def install(destination)
-      # Don't actually do anything
+    def install
+      Monolith.formatter.debug("Skipping cookbook #{@cookbook.cookbook_name}" \
+                               "with path location")
     end
 
-    def update(destination)
-      # Don't actually do anything
+    def update
+      Monolith.formatter.debug("Skipping cookbook #{@cookbook.cookbook_name}" \
+                               "with path location")
     end
 
-    def clean(destination)
-      # Don't actually do anything
+    def clean
+      Monolith.formatter.debug("Skipping cookbook #{@cookbook.cookbook_name}" \
+                               "with path location")
     end
   end
 end
