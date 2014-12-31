@@ -2,5 +2,5 @@
 # This is a horrible hack right now until I can work out how to load
 # extensions for additional commands into berks.
 $:.push File.expand_path('../../lib', __FILE__)
-require 'berkshelf/monolith'
+require 'monolith'
 Monolith::Command.start
