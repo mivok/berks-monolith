@@ -27,5 +27,9 @@ module Monolith
     def msg(msg)
       puts msg unless @quiet
     end
+
+    def error(msg)
+      STDERR.puts msg
+    end
   end
 end

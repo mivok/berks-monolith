@@ -5,7 +5,12 @@ module Monolith
     attr_reader :berksfile
 
     def initialize(options)
-      @berksfile = Berkshelf::Berksfile.from_options(options)
+      begin
+        @berksfile = Berkshelf::Berksfile.from_options(options)
+      rescue Berkshelf::BerksfileNotFound => e
+        Monolith.formatter.error(e)
+        exit(e.status_code)
+      end
     end
 
     # Retrieve all cookbooks listed in the berksfile, ensuring they're
