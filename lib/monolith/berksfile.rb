@@ -29,7 +29,8 @@ module Monolith
       cached_cookbooks = @berksfile.cookbooks
       if block_given?
         cached_cookbooks.each do |cookbook|
-          destination = File.join(path, cookbook.cookbook_name)
+          destination = File.join(File.expand_path(path),
+                                  cookbook.cookbook_name)
           dep = berksfile.get_dependency(cookbook.cookbook_name)
           if dep and dep.location
             yield cookbook, dep, destination
