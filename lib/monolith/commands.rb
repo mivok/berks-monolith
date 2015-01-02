@@ -19,6 +19,10 @@ module Monolith
       :aliases => '-d',
       :default => false
 
+    class_option :berksfile,
+      :desc => 'Location of the Berksfile to use',
+      :aliases => '-b'
+
     class_option :git_exclude,
       :type => :boolean,
       :desc => 'Add installed cookbooks to git exclude file',
