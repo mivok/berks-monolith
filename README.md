@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mivok/berks-monolith.svg?branch=master)](https://travis-ci.org/mivok/berks-monolith)
+
 # berks-monolith
 
 Berks-monolith is a companion command to berkshelf that takes all cookbooks
