@@ -33,6 +33,16 @@ The `berks install` command collects all cookbooks into
 `~/.berkshelf/cookbooks`, but again VCS information is stripped out, and this
 contains all cookbooks, not just those associated with a specific Berksfile.
 
+# Installation
+
+Install from rubygems:
+
+    gem install berks-monolith
+
+Or to install the development version from a git clone:
+
+    rake install
+
 ## Usage
 
 ### berks-monolith install
