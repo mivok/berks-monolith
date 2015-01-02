@@ -1,6 +1,7 @@
 require 'thor'
 require 'monolith/berksfile'
 require 'monolith/formatter'
+require 'monolith/gitexclude'
 
 module Monolith
   class Command < Thor
@@ -18,6 +19,11 @@ module Monolith
       :aliases => '-d',
       :default => false
 
+    class_option :git_exclude,
+      :type => :boolean,
+      :desc => 'Add installed cookbooks to git exclude file',
+      :default => true
+
     def initialize(*args)
       super(*args)
 
@@ -29,9 +35,13 @@ module Monolith
     def install(path = File.join(Dir.pwd, "cookbooks"))
       berksfile = Monolith::Berksfile.new(options.dup)
       berksfile.install # We need to run berks install first
+      gitpath = File.expand_path('../.git', berksfile.berksfile.filepath)
+      gitexclude = GitExclude.new(gitpath, options)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
         berksfile.monolith_action(:install, cookbook, dep, destination)
+        gitexclude.add(destination)
       end
+      gitexclude.update
     end
 
     desc 'update [PATH]', 'Update all cloned cookbooks'
@@ -45,9 +55,13 @@ module Monolith
     desc 'clean [PATH]', 'Delete all cloned cookbooks'
     def clean(path = File.join(Dir.pwd, "cookbooks"))
       berksfile = Monolith::Berksfile.new(options.dup)
+      gitpath = File.expand_path('../.git', berksfile.berksfile.filepath)
+      gitexclude = GitExclude.new(gitpath, options)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
         berksfile.monolith_action(:clean, cookbook, dep, destination)
+        gitexclude.remove(destination)
       end
+      gitexclude.update
     end
   end
 end
