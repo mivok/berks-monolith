@@ -1,4 +1,5 @@
 require 'berkshelf'
+require 'fileutils'
 
 module Monolith
   class Berksfile
@@ -26,6 +27,7 @@ module Monolith
     #
     # Can take a block to do something with each cookbook.
     def cookbooks(path)
+      FileUtils.mkdir_p(path)
       cached_cookbooks = @berksfile.cookbooks
       if block_given?
         cached_cookbooks.each do |cookbook|
