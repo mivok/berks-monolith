@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/mivok/berks-monolith.png?label=ready&title=Ready)](https://waffle.io/mivok/berks-monolith)
 [![Build Status](https://travis-ci.org/mivok/berks-monolith.svg?branch=master)](https://travis-ci.org/mivok/berks-monolith)
 
 # berks-monolith
