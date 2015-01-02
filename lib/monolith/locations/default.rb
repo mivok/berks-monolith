@@ -7,7 +7,7 @@ module Monolith
       # accessible, and then you have to guess how to check it out.
       if File.directory?(@destination)
         rel_dest = Monolith.formatter.rel_dir(@destination)
-        Monolith.formatter.skip("#{rel_dest} already exists")
+        Monolith.formatter.skip(@cookbook, "#{rel_dest} already exists")
       else
         Monolith.formatter.install(@cookbook, @destination)
         FileUtils.cp_r(@cookbook.path, @destination)
@@ -18,7 +18,7 @@ module Monolith
       # There isn't anything to do for updating a community cookbook except
       # blowing it away and recreating it. For the moment I'm opting not to do
       # that (it may be able ot be an option later)
-      Monolith.formatter.skip("Not updating community cookbook")
+      Monolith.formatter.skip(@cookbook, "Not updating community cookbook")
     end
   end
 end
