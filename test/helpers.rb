@@ -22,7 +22,9 @@ module Monolith
           f.puts "name '#{name}'"
         end
         %x|git add metadata.rb|
-        %x|git commit --author "Me <me@example.com>" -m "Test commit"|
+        %x|git config --local user.name Me|
+        %x|git config --local user.email me@example.com|
+        %x|git commit -m "Test commit"|
         %x|git remote add origin "git@git.example.com:#{name}"|
       end
       repo_path
