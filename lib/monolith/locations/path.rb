@@ -8,16 +8,19 @@ module Monolith
     def install
       Monolith.formatter.debug("Skipping cookbook #{@cookbook.cookbook_name}" \
                                "with path location")
+      nil
     end
 
     def update
       Monolith.formatter.debug("Skipping cookbook #{@cookbook.cookbook_name}" \
                                "with path location")
+      nil
     end
 
     def clean
       Monolith.formatter.debug("Skipping cookbook #{@cookbook.cookbook_name}" \
                                "with path location")
+      nil
     end
   end
 end

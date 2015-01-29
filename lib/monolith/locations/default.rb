@@ -12,6 +12,7 @@ module Monolith
         Monolith.formatter.install(@cookbook, @destination)
         FileUtils.cp_r(@cookbook.path, @destination)
       end
+      true
     end
 
     def update
@@ -19,6 +20,7 @@ module Monolith
       # blowing it away and recreating it. For the moment I'm opting not to do
       # that (it may be able ot be an option later)
       Monolith.formatter.skip(@cookbook, "Not updating community cookbook")
+      nil
     end
   end
 end

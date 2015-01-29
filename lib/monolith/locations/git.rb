@@ -19,9 +19,11 @@ module Monolith
 
         # Not sure if I want to do this - should probably be an option
         #git %|reset --hard #{@revision}|
+        true
       else
         rel_dest = Monolith.formatter.rel_dir(@destination)
         Monolith.formatter.skip(@cookbook, "#{rel_dest} already exists")
+        nil
       end
     end
 
@@ -31,9 +33,11 @@ module Monolith
         Dir.chdir(@destination) do
           git %|pull|
         end
+        true
       else
         rel_dest = Monolith.formatter.rel_dir(@destination)
         Monolith.formatter.skip(@cookbook, "#{rel_dest} doesn't exist")
+        nil
       end
     end
 

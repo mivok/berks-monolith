@@ -42,8 +42,9 @@ module Monolith
       gitpath = File.expand_path('../.git', berksfile.berksfile.filepath)
       gitexclude = GitExclude.new(gitpath, options)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
-        berksfile.monolith_action(:install, cookbook, dep, destination)
-        gitexclude.add(destination)
+        changed = berksfile.monolith_action(:install, cookbook, dep, destination)
+
+        gitexclude.add(destination) if changed
       end
       gitexclude.update
     end
@@ -62,8 +63,8 @@ module Monolith
       gitpath = File.expand_path('../.git', berksfile.berksfile.filepath)
       gitexclude = GitExclude.new(gitpath, options)
       berksfile.cookbooks(path) do |cookbook, dep, destination|
-        berksfile.monolith_action(:clean, cookbook, dep, destination)
-        gitexclude.remove(destination)
+        changed = berksfile.monolith_action(:clean, cookbook, dep, destination)
+        gitexclude.remove(destination) if changed
       end
       gitexclude.update
     end

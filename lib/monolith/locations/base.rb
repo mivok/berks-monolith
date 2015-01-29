@@ -28,9 +28,11 @@ module Monolith
       if File.exist?(@destination)
         Monolith.formatter.clean(@cookbook, @destination)
         FileUtils.rm_rf(@destination)
+        true
       else
         rel_dest = Monolith.formatter.rel_dir(@destination)
         Monolith.formatter.skip(@cookbook, "#{rel_dest} doesn't exist")
+        nil
       end
     end
   end
