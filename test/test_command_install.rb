@@ -22,4 +22,13 @@ class TestCommandInstall < MiniTest::Test
       assert File.exist?("cookbooks/test_git/.git")
     end
   end
+
+  def test_nested_dependencies
+    make_berksfile([:nested_community]) do
+      Monolith::Command.start(['install', '-q'])
+      assert File.exist?("cookbooks/test_nested")
+      assert File.exist?("cookbooks/test_nested/metadata.rb")
+      assert File.exist?("cookbooks/testmh")
+    end
+  end
 end

@@ -70,6 +70,13 @@ module Monolith
           elsif type == :path
             cb_path = make_path_cookbook('test_path')
             berksfile.puts("cookbook 'test_path', :path => '#{cb_path}'")
+          elsif type == :nested_community
+            cb_path = make_path_cookbook('test_nested')
+            berksfile.puts("cookbook 'test_nested', :path => '#{cb_path}'")
+            # Note: testmh is an arbitrary cookbook that exists on
+            # supermarket, and could be replaced by any other cookbook as long
+            # as the tests are updated appropriately.
+            add_metadata_dependency(cb_path, 'testmh')
           end
         end
       end
@@ -77,6 +84,14 @@ module Monolith
       if block_given?
         Dir.chdir(tmp_path) do
           yield
+        end
+      end
+    end
+
+    def add_metadata_dependency(cookbook_path, cookbook_name)
+      Dir.chdir(cookbook_path) do
+        File.open('metadata.rb', 'a') do |f|
+          f.puts "depends '#{cookbook_name}'"
         end
       end
     end

@@ -4,6 +4,7 @@ require 'fileutils'
 module Monolith
   class Berksfile
     attr_reader :berksfile
+    attr_reader :cached_cookbooks
 
     def initialize(options)
       Berkshelf.ui.mute! if Monolith.formatter.quiet
@@ -20,7 +21,7 @@ module Monolith
     # copy. However, it's not needed for other commands, so it separated out
     # here.
     def install
-      @berksfile.install
+      @cached_cookbooks = @berksfile.install
     end
 
     # Retrieve all cookbooks listed in the berksfile.
@@ -28,15 +29,13 @@ module Monolith
     # Can take a block to do something with each cookbook.
     def cookbooks(path)
       FileUtils.mkdir_p(path)
-      cached_cookbooks = @berksfile.cookbooks
+      cached_cookbooks = @cached_cookbooks
       if block_given?
         cached_cookbooks.each do |cookbook|
           destination = File.join(File.expand_path(path),
                                   cookbook.cookbook_name)
           dep = berksfile.get_dependency(cookbook.cookbook_name)
-          if dep
-            yield cookbook, dep, destination
-          end
+          yield cookbook, dep, destination
         end
       end
       cached_cookbooks
@@ -54,7 +53,7 @@ module Monolith
     # Feteches the appropriate monolith location object for a given cookbook
     # dependency. I.e. Monolith::FooLocation.
     def monolith_obj(cookbook, dep, destination)
-      if dep.location.nil?
+      if dep.nil? or dep.location.nil?
         Monolith::DefaultLocation.new(cookbook, dep, destination)
       else
         klass = dep.location.class.name.split('::')[-1]

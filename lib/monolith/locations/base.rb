@@ -2,7 +2,7 @@ module Monolith
   class BaseLocation
     def initialize(cookbook, dep, destination)
       @dep = dep
-      @location = dep.location
+      @location = dep.location unless dep.nil?
       @cookbook = cookbook
       @destination = destination
     end

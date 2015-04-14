@@ -35,6 +35,7 @@ class TestGitLocation < MiniTest::Test
     @mock_cookbook.expect :cookbook_name, @test_cookbook
     @mock_dep = Minitest::Mock.new
     @mock_dep.expect :location, nil
+    @mock_dep.expect :nil?, false
     location = Monolith::GitLocation.new(@mock_cookbook, @mock_dep,
                                          @mock_destination)
     location.stub(:cache_path, @mock_cache) do
